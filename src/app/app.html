@@ -35,4 +35,138 @@
 
         </div>
     </div>
+
+    <div class="flex flex-col sm:flex-row gap-3">
+
+        <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-3 py-2 flex-1 min-w-0">
+            <lucide-icon [img]="Search" [size]="16" class="text-gray-400 shrink-0"></lucide-icon>
+
+            <input
+                type="text"
+                placeholder="Search tasks..."
+                class="w-full min-w-0 outline-none text-sm bg-transparent"
+            />
+        </div>
+
+        <select class="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none cursor-pointer w-full sm:w-auto">
+            <option value="all">All Categories</option>
+            <option value="personal">Personal</option>
+            <option value="work">Work</option>
+            <option value="others">Others</option>
+        </select>
+
+    </div>
+
+    <div class="flex gap-1 bg-gray-300 rounded-xl p-1">
+
+        <button class="flex-1 bg-white text-purple-700 rounded-lg py-2 text-sm font-semibold cursor-pointer">
+            All <span class="ml-1 bg-purple-600 text-white rounded-full px-1.5 text-xs">3</span>
+        </button>
+
+        <button class="flex-1 text-gray-600 rounded-lg py-2 text-sm cursor-pointer">
+            Active <span class="ml-1 text-purple-700 font-semibold">2</span>
+        </button>
+
+        <button class="flex-1 text-gray-600 rounded-lg py-2 text-sm cursor-pointer">
+            Completed <span class="ml-1 text-purple-700 font-semibold">1</span>
+        </button>
+
+    </div>
+
+    <!-- Task List -->
+    <div class="bg-white border border-gray-200 rounded-xl p-4">
+
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <h2 class="font-semibold">All Tasks</h2>
+
+            <button class="text-sm text-gray-400 hover:text-purple-600 transition cursor-pointer">
+                Clear Completed
+            </button>
+        </div>
+
+        <div class="flex flex-col gap-3">
+
+            @for (task of tasks; track task.id) {
+                <div class="flex items-center gap-3 border border-gray-200 bg-gray-50 rounded-xl p-3 sm:p-4">
+
+                    <!-- Dummy Checkbox -->
+                    <div
+                        class="w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center"
+                        [class.bg-green-500]="task.completed"
+                        [class.border-green-500]="task.completed"
+                        [class.border-gray-400]="!task.completed"
+                    >
+                        @if (task.completed) {
+                            <span class="text-white text-sm">✓</span>
+                        }
+                    </div>
+
+                    <!-- Task Details -->
+                    <div class="flex-1 min-w-0">
+
+                        <p
+                            class="font-medium text-sm truncate"
+                            [class.line-through]="task.completed"
+                            [class.text-gray-400]="task.completed"
+                        >
+                            {{ task.title }}
+                        </p>
+
+                        <div class="flex flex-wrap items-center gap-2 mt-1">
+
+                            <span class="text-[10px] uppercase font-semibold text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded">
+                                {{ task.category }}
+                            </span>
+
+                            <span
+                                class="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-full border"
+                                [class.text-red-500]="task.priority === 'High'"
+                                [class.bg-red-50]="task.priority === 'High'"
+                                [class.border-red-100]="task.priority === 'High'"
+                                [class.text-amber-600]="task.priority === 'Medium'"
+                                [class.bg-amber-50]="task.priority === 'Medium'"
+                                [class.border-amber-100]="task.priority === 'Medium'"
+                            >
+                                ● {{ task.priority }}
+                            </span>
+
+                            @if (task.dueDate && !task.completed) {
+                                <span class="flex items-center gap-1 text-[10px] text-red-400">
+                                    <lucide-icon [img]="CalendarDays" [size]="12"></lucide-icon>
+                                    Overdue: {{ task.dueDate }}
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <!-- Action Icons -->
+                    <div class="flex items-center gap-2 shrink-0">
+
+                        <button class="p-1.5 text-gray-500 hover:text-purple-600 transition cursor-pointer" aria-label="Edit task">
+                            <lucide-icon [img]="Pencil" [size]="16"></lucide-icon>
+                        </button>
+
+                        <button class="p-1.5 text-gray-500 hover:text-red-500 transition cursor-pointer" aria-label="Delete task">
+                            <lucide-icon [img]="Trash2" [size]="16"></lucide-icon>
+                        </button>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+    <button
+        type="button"
+        aria-label="Add a new task"
+        title="Add a new task"
+        class="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-purple-600 text-white shadow-lg shadow-purple-600/30 transition-all duration-200 hover:scale-110 hover:bg-purple-700 active:scale-95 cursor-pointer"
+    >
+        <lucide-icon [img]="Plus" [size]="28" [strokeWidth]="2.5"></lucide-icon>
+    </button>
 </div>
