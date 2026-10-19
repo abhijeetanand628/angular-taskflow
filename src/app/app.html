@@ -84,7 +84,11 @@
         <div class="flex items-center justify-between gap-3 mb-4">
             <h2 class="font-semibold">All Tasks</h2>
 
-            <button class="text-sm text-gray-400 hover:text-purple-600 transition cursor-pointer">
+            <button
+                type="button"
+                (click)="clearCompleted()"
+                class="text-sm text-gray-400 hover:text-purple-600 transition cursor-pointer"
+            >
                 Clear Completed
             </button>
         </div>
@@ -128,15 +132,19 @@
                             </span>
 
                             <span
-                                class="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-full border"
+                                class="inline-flex items-center gap-1 text-[10px] uppercase font-semibold px-2 py-1 rounded-full border"
                                 [class.text-red-500]="task.priority === 'High'"
                                 [class.bg-red-50]="task.priority === 'High'"
                                 [class.border-red-100]="task.priority === 'High'"
                                 [class.text-amber-600]="task.priority === 'Medium'"
                                 [class.bg-amber-50]="task.priority === 'Medium'"
                                 [class.border-amber-100]="task.priority === 'Medium'"
+                                [class.text-emerald-600]="task.priority === 'Low'"
+                                [class.bg-emerald-50]="task.priority === 'Low'"
+                                [class.border-emerald-100]="task.priority === 'Low'"
                             >
-                                ● {{ task.priority }}
+                                <span class="text-[8px]">●</span>
+                                {{ task.priority }}
                             </span>
 
                             @if (task.dueDate && !task.completed) {
@@ -157,7 +165,12 @@
                             <lucide-icon [img]="Pencil" [size]="16"></lucide-icon>
                         </button>
 
-                        <button class="p-1.5 text-gray-500 hover:text-red-500 transition cursor-pointer" aria-label="Delete task">
+                        <button
+                            type="button"
+                            (click)="deleteTask(task.id)"
+                            class="p-1.5 text-gray-500 hover:text-red-500 transition cursor-pointer"
+                            aria-label="Delete task"
+                        >
                             <lucide-icon [img]="Trash2" [size]="16"></lucide-icon>
                         </button>
 
@@ -172,10 +185,103 @@
 
     <button
         type="button"
+        (click)="openAddTaskModal()"
         aria-label="Add a new task"
         title="Add a new task"
         class="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-purple-600 text-white shadow-lg shadow-purple-600/30 transition-all duration-200 hover:scale-110 hover:bg-purple-700 active:scale-95 cursor-pointer"
     >
         <lucide-icon [img]="Plus" [size]="28" [strokeWidth]="2.5"></lucide-icon>
     </button>
+
+    @if (showAddTaskModal()) {
+        <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
+
+            <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl font-semibold">Add New Task</h2>
+
+                    <button
+                        type="button"
+                        (click)="closeAddTaskModal()"
+                        class="text-gray-500 hover:text-gray-800 text-xl cursor-pointer"
+                        aria-label="Close modal"
+                    >
+                        ✕
+                    </button>
+                </div>
+
+                <!-- ADD YOUR FORM HERE -->
+                <form (submit)="$event.preventDefault(); submitTask()" class="flex flex-col gap-4">
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Task Title *</label>
+                        <input
+                            type="text"
+                            placeholder="What do you need to do?"
+                            [value]="taskTitle()"
+                            (input)="taskTitle.set($any($event.target).value)"
+                            required
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-purple-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Category</label>
+                        <select
+                            [value]="taskCategory()"
+                            (change)="taskCategory.set($any($event.target).value)"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-purple-500"
+                        >
+                            <option value="Personal">Personal</option>
+                            <option value="Work">Work</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Priority</label>
+                        <select
+                            [value]="taskPriority()"
+                            (change)="taskPriority.set($any($event.target).value)"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-purple-500"
+                        >
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Due Date</label>
+                        <input
+                            type="date"
+                            [value]="taskDueDate()"
+                            (change)="taskDueDate.set($any($event.target).value)"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-purple-500"
+                        />
+                    </div>
+
+                    <div class="flex justify-end gap-3 mt-2">
+                        <button
+                            type="button"
+                            (click)="closeAddTaskModal()"
+                            class="px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700"
+                        >
+                            Add Task
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    }
 </div>

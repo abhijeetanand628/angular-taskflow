@@ -2,6 +2,15 @@ import { Component, signal, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Moon, Search, Plus, CalendarDays, Pencil, Trash2, LucideAngularModule } from 'lucide-angular';
 
+interface Task {
+  id: number;
+  title: string;
+  category: string;
+  priority: string;
+  dueDate: string;
+  completed: boolean;
+}
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, LucideAngularModule],
@@ -15,8 +24,12 @@ export class App {
   readonly Pencil = Pencil;
   readonly Trash2 = Trash2;
   readonly Plus = Plus;
+  taskTitle = signal('');
+  taskCategory = signal('Personal');
+  taskPriority = signal('Medium');
+  taskDueDate = signal('');
 
-  tasks = signal([
+  tasks = signal<Task[]>([
     {
       id: 1,
       title: 'task2',
@@ -63,6 +76,62 @@ export class App {
 
     return (this.completedCount() / total) * 100;
   })
+
+  addTask(task: Omit<Task, 'id'>) {
+    const newTask: Task = {
+      ...task,
+      id: Date.now()
+    };
+
+    this.tasks.update(currentTasks => [
+      ...currentTasks, newTask
+    ])
+  }
+
+  showAddTaskModal = signal(false)
+
+  openAddTaskModal() {
+    this.showAddTaskModal.set(true)
+  }
+
+  closeAddTaskModal() {
+    this.showAddTaskModal.set(false)
+  }
+
+  submitTask() {
+    const title = this.taskTitle().trim()
+
+    if(!title) {
+      return;
+    }
+
+    this.addTask({
+      title,
+      category: this.taskCategory(),
+      priority: this.taskPriority(),
+      dueDate: this.taskDueDate(),
+      completed: false
+    });
+
+    this.taskTitle.set('');
+    this.taskCategory.set('Personal');
+    this.taskPriority.set('Medium');
+    this.taskDueDate.set('');
+
+    this.closeAddTaskModal();
+  }
+
+  deleteTask(id: number) {
+    this.tasks.update(currentTasks => 
+      currentTasks.filter(task => task.id !== id)
+    )
+  }
+
+  clearCompleted() {
+    this.tasks.update(currentTasks => 
+      currentTasks.filter(task => !task.completed)
+    )
+  }
 
   toggleTask(id: number) {
     this.tasks.update(currentTasks => 
