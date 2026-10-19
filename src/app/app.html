@@ -15,21 +15,26 @@
     <div class="bg-white p-5 rounded-xl w-full">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
             <h2 class="text-lg font-semibold">Your Progress</h2>
-            <p class="text-sm text-gray-500">1 of 3 tasks completed</p>
+            <p class="text-sm text-gray-500">
+                {{ completedCount() }} of {{ totalTasks() }} tasks completed
+            </p>
         </div>
 
-        <div class="w-full bg-gray-200 rounded-full h-2">
-            <div class="bg-purple-600 h-2 rounded-full w-1/3"></div>
+        <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div
+                class="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                [style.width.%]="progressPercentage()"
+            ></div>
         </div>
 
         <div class="flex gap-8 mt-5">
             <div>
-                <p class="text-xl font-semibold">2</p>
+                <p class="text-xl font-semibold">{{pendingCount()}}</p>
                 <p class="text-xs text-gray-400 uppercase font-semibold">Pending</p>
             </div>
 
             <div>
-                <p class="text-xl font-semibold">1</p>
+                <p class="text-xl font-semibold">{{completedCount()}}</p>
                 <p class="text-xs text-gray-400 uppercase font-semibold">Completed</p>
             </div>
 
@@ -86,12 +91,16 @@
 
         <div class="flex flex-col gap-3">
 
-            @for (task of tasks; track task.id) {
+            @for (task of tasks(); track task.id) {
                 <div class="flex items-center gap-3 border border-gray-200 bg-gray-50 rounded-xl p-3 sm:p-4">
 
-                    <!-- Dummy Checkbox -->
-                    <div
-                        class="w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center"
+                    <!-- Functional Checkbox -->
+                    <button
+                        type="button"
+                        (click)="toggleTask(task.id)"
+                        [attr.aria-pressed]="task.completed"
+                        [attr.aria-label]="task.completed ? 'Mark task as pending' : 'Mark task as completed'"
+                        class="w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center cursor-pointer transition"
                         [class.bg-green-500]="task.completed"
                         [class.border-green-500]="task.completed"
                         [class.border-gray-400]="!task.completed"
@@ -99,7 +108,7 @@
                         @if (task.completed) {
                             <span class="text-white text-sm">✓</span>
                         }
-                    </div>
+                    </button>
 
                     <!-- Task Details -->
                     <div class="flex-1 min-w-0">

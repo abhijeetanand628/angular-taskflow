@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Moon, Search, Plus, CalendarDays, Pencil, Trash2, LucideAngularModule } from 'lucide-angular';
 
@@ -16,7 +16,7 @@ export class App {
   readonly Trash2 = Trash2;
   readonly Plus = Plus;
 
-  tasks = [
+  tasks = signal([
     {
       id: 1,
       title: 'task2',
@@ -41,5 +41,36 @@ export class App {
       dueDate: '',
       completed: true
     }
-  ];
+  ]);
+
+  totalTasks = computed(() => this.tasks().length)
+
+  completedCount = computed(() => 
+    this.tasks().filter(task => task.completed).length
+  )
+
+  pendingCount = computed(() => 
+    this.tasks().filter(task => !task.completed).length
+  )
+
+  progressPercentage = computed(() => {
+    const total = this.totalTasks();
+
+    if(total === 0)
+    {
+      return 0;
+    }
+
+    return (this.completedCount() / total) * 100;
+  })
+
+  toggleTask(id: number) {
+    this.tasks.update(currentTasks => 
+      currentTasks.map(task => 
+        task.id === id
+        ? {...task, completed: !task.completed}
+        : task
+      )
+    )
+  }
 }
