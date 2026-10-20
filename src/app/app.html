@@ -60,16 +60,49 @@
 
     <div class="flex gap-1 bg-gray-300 rounded-xl p-1">
 
-        <button class="flex-1 bg-white text-purple-700 rounded-lg py-2 text-sm font-semibold cursor-pointer">
-            All <span class="ml-1 bg-purple-600 text-white rounded-full px-1.5 text-xs">{{totalTasks()}}</span>
+        <button
+            type="button"
+            (click)="selectedTab.set('All')"
+            class="flex-1 rounded-lg py-2 text-sm cursor-pointer transition"
+            [class.bg-white]="selectedTab() === 'All'"
+            [class.text-purple-700]="selectedTab() === 'All'"
+            [class.font-semibold]="selectedTab() === 'All'"
+            [class.text-gray-600]="selectedTab() !== 'All'"
+        >
+            All
+            <span class="ml-1 bg-purple-600 text-white rounded-full px-1.5 text-xs">
+                {{ totalTasks() }}
+            </span>
         </button>
 
-        <button class="flex-1 text-gray-600 rounded-lg py-2 text-sm cursor-pointer">
-            Active <span class="ml-1 text-purple-700 font-semibold">{{pendingCount()}}</span>
+        <button
+            type="button"
+            (click)="selectedTab.set('Active')"
+            class="flex-1 rounded-lg py-2 text-sm cursor-pointer transition"
+            [class.bg-white]="selectedTab() === 'Active'"
+            [class.text-purple-700]="selectedTab() === 'Active'"
+            [class.font-semibold]="selectedTab() === 'Active'"
+            [class.text-gray-600]="selectedTab() !== 'Active'"
+        >
+            Active
+            <span class="ml-1 text-purple-700 font-semibold">
+                {{ pendingCount() }}
+            </span>
         </button>
 
-        <button class="flex-1 text-gray-600 rounded-lg py-2 text-sm cursor-pointer">
-            Completed <span class="ml-1 text-purple-700 font-semibold">{{completedCount()}}</span>
+        <button
+            type="button"
+            (click)="selectedTab.set('Completed')"
+            class="flex-1 rounded-lg py-2 text-sm cursor-pointer transition"
+            [class.bg-white]="selectedTab() === 'Completed'"
+            [class.text-purple-700]="selectedTab() === 'Completed'"
+            [class.font-semibold]="selectedTab() === 'Completed'"
+            [class.text-gray-600]="selectedTab() !== 'Completed'"
+        >
+            Completed
+            <span class="ml-1 text-purple-700 font-semibold">
+                {{ completedCount() }}
+            </span>
         </button>
 
     </div>
@@ -91,7 +124,7 @@
 
         <div class="flex flex-col gap-3">
 
-            @for (task of tasks(); track task.id) {
+            @for (task of filteredTasks(); track task.id) {
                 <div class="flex items-center gap-3 border border-gray-200 bg-gray-50 rounded-xl p-3 sm:p-4">
 
                     <!-- Functional Checkbox -->

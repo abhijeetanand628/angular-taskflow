@@ -28,6 +28,7 @@ export class App {
   taskPriority = signal('');
   taskDueDate = signal('');
   editingTaskId = signal<number | null>(null);
+  selectedTab = signal<'All' | 'Active' | 'Completed'>('All');
 
   constructor() {
     effect(() => {
@@ -208,4 +209,20 @@ export class App {
       )
     )
   }
+
+  filteredTasks = computed(() => {
+    const tab = this.selectedTab();
+
+    return this.tasks().filter(task => {
+      if (tab === 'Active') {
+        return !task.completed;
+      }
+
+      if (tab === 'Completed') {
+        return task.completed;
+      }
+
+      return true;
+    });
+  });
 }
