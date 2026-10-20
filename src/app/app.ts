@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Moon, Search, Plus, CalendarDays, Pencil, Trash2, LucideAngularModule } from 'lucide-angular';
 
@@ -30,32 +30,63 @@ export class App {
   taskDueDate = signal('');
   editingTaskId = signal<number | null>(null);
 
-  tasks = signal<Task[]>([
-    {
-      id: 1,
-      title: 'task2',
-      category: 'Personal',
-      priority: 'High',
-      dueDate: 'May 29, 2026',
-      completed: false
-    },
-    {
-      id: 2,
-      title: 'abc',
-      category: 'Personal',
-      priority: 'Medium',
-      dueDate: 'May 28, 2026',
-      completed: false
-    },
-    {
-      id: 3,
-      title: 'test',
-      category: 'Others',
-      priority: 'Medium',
-      dueDate: '',
-      completed: true
+  constructor() {
+    effect(() => {
+      const currentTasks = this.tasks();
+
+      try {
+        localStorage.setItem(
+          'taskflow-tasks',
+          JSON.stringify(currentTasks)
+        );
+      } catch (error) {
+        console.error('Could not save tasks:', error);
+      }
+    });
+  }
+
+  tasks = signal<Task[]>(this.loadTasks());
+
+  private loadTasks(): Task[] {
+    const defaultTasks: Task[] = [
+      {
+        id: 1,
+        title: 'task2',
+        category: 'Personal',
+        priority: 'High',
+        dueDate: 'May 29, 2026',
+        completed: false
+      },
+      {
+        id: 2,
+        title: 'abc',
+        category: 'Personal',
+        priority: 'Medium',
+        dueDate: 'May 28, 2026',
+        completed: false
+      },
+      {
+        id: 3,
+        title: 'test',
+        category: 'Others',
+        priority: 'Medium',
+        dueDate: '',
+        completed: true
+      }
+    ];
+
+    try {
+      const savedTasks = localStorage.getItem('taskflow-tasks');
+
+      if (savedTasks !== null) {
+        return JSON.parse(savedTasks) as Task[];
+      }
+    } catch (error) {
+      console.error('Could not load saved tasks:', error);
     }
-  ]);
+
+    return defaultTasks;
+  }
 
   totalTasks = computed(() => this.tasks().length)
 
