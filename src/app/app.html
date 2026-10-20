@@ -161,7 +161,12 @@
                     <!-- Action Icons -->
                     <div class="flex items-center gap-2 shrink-0">
 
-                        <button class="p-1.5 text-gray-500 hover:text-purple-600 transition cursor-pointer" aria-label="Edit task">
+                        <button
+                            type="button"
+                            (click)="editTask(task.id)"
+                            class="p-1.5 text-gray-500 hover:text-purple-600 transition cursor-pointer"
+                            aria-label="Edit task"
+                        >
                             <lucide-icon [img]="Pencil" [size]="16"></lucide-icon>
                         </button>
 
@@ -199,7 +204,9 @@
             <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
 
                 <div class="flex items-center justify-between mb-5">
-                    <h2 class="text-xl font-semibold">Add New Task</h2>
+                    <h2 class="text-xl font-semibold">
+                        {{ editingTaskId() !== null ? 'Edit Task' : 'Add New Task' }}
+                    </h2>
 
                     <button
                         type="button"
@@ -233,6 +240,7 @@
                             (change)="taskCategory.set($any($event.target).value)"
                             class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-purple-500"
                         >
+                            <option value="" disabled>Select category</option>
                             <option value="Personal">Personal</option>
                             <option value="Work">Work</option>
                             <option value="Others">Others</option>
@@ -246,6 +254,7 @@
                             (change)="taskPriority.set($any($event.target).value)"
                             class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-purple-500"
                         >
+                            <option value="" disabled>Select priority</option>
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>
                             <option value="Low">Low</option>
@@ -275,7 +284,7 @@
                             type="submit"
                             class="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700"
                         >
-                            Add Task
+                            {{ editingTaskId() !== null ? 'Save Changes' : 'Add Task' }}
                         </button>
                     </div>
 

@@ -25,9 +25,10 @@ export class App {
   readonly Trash2 = Trash2;
   readonly Plus = Plus;
   taskTitle = signal('');
-  taskCategory = signal('Personal');
-  taskPriority = signal('Medium');
+  taskCategory = signal('');
+  taskPriority = signal('');
   taskDueDate = signal('');
+  editingTaskId = signal<number | null>(null);
 
   tasks = signal<Task[]>([
     {
@@ -91,7 +92,8 @@ export class App {
   showAddTaskModal = signal(false)
 
   openAddTaskModal() {
-    this.showAddTaskModal.set(true)
+    this.resetTaskForm();
+    this.showAddTaskModal.set(true);
   }
 
   closeAddTaskModal() {
@@ -105,20 +107,54 @@ export class App {
       return;
     }
 
-    this.addTask({
+    const taskData = {
       title,
       category: this.taskCategory(),
       priority: this.taskPriority(),
       dueDate: this.taskDueDate(),
       completed: false
-    });
+    };
 
-    this.taskTitle.set('');
-    this.taskCategory.set('Personal');
-    this.taskPriority.set('Medium');
-    this.taskDueDate.set('');
+    const editingId = this.editingTaskId();
 
+    if (editingId !== null) {
+      this.tasks.update(currentTasks =>
+        currentTasks.map(task =>
+          task.id === editingId
+            ? { ...task, ...taskData, completed: task.completed }
+            : task
+        )
+      );
+    } else {
+      this.addTask(taskData);
+    }
+
+    this.resetTaskForm();
     this.closeAddTaskModal();
+  }
+
+  editTask(id: number) {
+    const task = this.tasks().find(task => task.id === id)
+
+    if(!task)
+    {
+      return;
+    }
+
+    this.editingTaskId.set(task.id);
+    this.taskTitle.set(task.title);
+    this.taskCategory.set(task.category);
+    this.taskPriority.set(task.priority);
+    this.taskDueDate.set(task.dueDate);
+    this.showAddTaskModal.set(true);
+  }
+
+  resetTaskForm() {
+    this.editingTaskId.set(null);
+    this.taskTitle.set('');
+    this.taskCategory.set('');
+    this.taskPriority.set('');
+    this.taskDueDate.set('');
   }
 
   deleteTask(id: number) {
