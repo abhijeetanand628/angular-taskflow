@@ -6,10 +6,6 @@
             <p class="text-gray-600">Organize your day, beautifully</p>
         </div>
 
-        <button class="p-2 rounded-full hover:bg-gray-100 transition cursor-pointer">
-            <lucide-icon [img]="Moon" [size]="22"></lucide-icon>
-        </button>
-
     </div>
 
     <div class="bg-white p-5 rounded-xl w-full">
@@ -65,15 +61,15 @@
     <div class="flex gap-1 bg-gray-300 rounded-xl p-1">
 
         <button class="flex-1 bg-white text-purple-700 rounded-lg py-2 text-sm font-semibold cursor-pointer">
-            All <span class="ml-1 bg-purple-600 text-white rounded-full px-1.5 text-xs">3</span>
+            All <span class="ml-1 bg-purple-600 text-white rounded-full px-1.5 text-xs">{{totalTasks()}}</span>
         </button>
 
         <button class="flex-1 text-gray-600 rounded-lg py-2 text-sm cursor-pointer">
-            Active <span class="ml-1 text-purple-700 font-semibold">2</span>
+            Active <span class="ml-1 text-purple-700 font-semibold">{{pendingCount()}}</span>
         </button>
 
         <button class="flex-1 text-gray-600 rounded-lg py-2 text-sm cursor-pointer">
-            Completed <span class="ml-1 text-purple-700 font-semibold">1</span>
+            Completed <span class="ml-1 text-purple-700 font-semibold">{{completedCount()}}</span>
         </button>
 
     </div>

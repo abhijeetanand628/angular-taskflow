@@ -1,6 +1,6 @@
 import { Component, signal, computed, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Moon, Search, Plus, CalendarDays, Pencil, Trash2, LucideAngularModule } from 'lucide-angular';
+import { Search, Plus, CalendarDays, Pencil, Trash2, LucideAngularModule } from 'lucide-angular';
 
 interface Task {
   id: number;
@@ -18,7 +18,6 @@ interface Task {
   styleUrl: './app.css'
 })
 export class App {
-  readonly Moon = Moon;
   readonly Search = Search;
   readonly CalendarDays = CalendarDays;
   readonly Pencil = Pencil;
